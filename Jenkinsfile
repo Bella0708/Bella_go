@@ -21,11 +21,13 @@ pipeline {
     }
     stage('build') {
       steps {
+      script {  
       def Image = docker.build("${env.REPO}:${env.BUILD_ID}") 
         
       docker.withRegistry('https://registry-1.docker.io', 'hub_token') {
               Image.push()
         }
+      }
       }
     }
   }
