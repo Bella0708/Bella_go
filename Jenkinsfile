@@ -3,7 +3,7 @@ pipeline {
   agent any
   environment {
     HOST = "89.169.168.67"
-    DIR = "/var/go-server"
+    REPO = "zabella/go_server"
   }
   stages {
     stage('Configure credentials') {
@@ -21,11 +21,11 @@ pipeline {
     }
     stage('build') {
       steps {
-        sshCommand remote: remote, command: """
-          set -ex ; set -o pipefail
-          cd $DIR
-          docker build -t go-server .
-        """
+      def Image = docker.build("${env.REPO}:${env.BUILD_ID}") 
+        
+      docker.withRegistry('https://registry-1.docker.io', 'hub_token') {
+              Image.push()
+        }
       }
     }
   }
